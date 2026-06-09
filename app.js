@@ -1,4 +1,4 @@
-// ⚡ 에너지 절약 캠페인
+// ⚡ 에너지 절약 캠페인 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, doc, addDoc, updateDoc, deleteDoc,
