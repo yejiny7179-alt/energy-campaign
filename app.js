@@ -25,8 +25,9 @@ const firebaseConfig = {
 const ADMIN_PASSWORD = "admin1234";  // ← 반드시 변경!
 // ────────────────────────────────────────────
 
-const CAMPAIGN_START = "2025-06-10";
-const CAMPAIGN_END   = "2025-06-17";
+// 날짜는 한국 시간(KST) 기준
+const CAMPAIGN_START = { y:2025, m:6, d:10 };  // 6월 10일
+const CAMPAIGN_END   = { y:2025, m:6, d:17 };  // 6월 17일
 const GRADES         = [1, 2];
 const CLASSES        = 11;
 
@@ -102,7 +103,12 @@ async function checkTodayApproved() {
 }
 
 function toDateStr(date) {
-  return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace('.', '');
+  // KST 기준
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  const y = kst.getUTCFullYear();
+  const m = String(kst.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(kst.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 // ══════════════════════════════════════════
@@ -133,11 +139,9 @@ function renderHero() {
   document.getElementById('st-top').textContent   = top ? `${top.g}학년\n${top.c}반` : '-';
 
   const pb = document.getElementById('pbadge');
-  const now = new Date(), s = new Date(CAMPAIGN_START), e = new Date(CAMPAIGN_END);
-  e.setHours(23, 59, 59);
-  if (now > e)         { pb.textContent = '종료';  pb.className = 'pbadge ended';  }
-  else if (now >= s)   { pb.textContent = '진행중'; pb.className = 'pbadge active'; }
-  else                 { pb.textContent = '예정';  pb.className = 'pbadge ready';  }
+  if (isEnded())        { pb.textContent = '종료';  pb.className = 'pbadge ended';  }
+  else if (isActive())  { pb.textContent = '진행중'; pb.className = 'pbadge active'; }
+  else                  { pb.textContent = '예정';  pb.className = 'pbadge ready';  }
 
   document.getElementById('ended-bar').style.display   = isEnded() ? 'flex' : 'none';
   document.getElementById('upload-card').style.opacity = isEnded() ? '0.55' : '1';
@@ -245,14 +249,15 @@ window.updateCls = () => {
   selG = document.getElementById('sel-g').value;
   const cs = document.getElementById('sel-c');
   cs.innerHTML = '<option value="">반 선택</option>';
-  if (!selG) return;
+  if (!selG) { chkReady(); return; }
   for (let c = 1; c <= CLASSES; c++) {
     const o = document.createElement('option');
-    o.value = c; o.textContent = `${c}반`; cs.appendChild(o);
+    o.value = String(c); o.textContent = `${c}반`; cs.appendChild(o);
   }
   selC = ''; chkReady();
 };
 
+document.getElementById('sel-g').addEventListener('change', () => window.updateCls());
 document.getElementById('sel-c').addEventListener('change', function () {
   selC = this.value; chkReady(); checkDupWarn();
 });
@@ -488,8 +493,25 @@ window.resetAll = async () => {
 // ══════════════════════════════════════════
 //  유틸
 // ══════════════════════════════════════════
+// 한국 시간(KST) 기준 오늘 날짜를 {y,m,d} 로 반환
+function kstToday() {
+  const now = new Date();
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  return { y: kst.getUTCFullYear(), m: kst.getUTCMonth() + 1, d: kst.getUTCDate() };
+}
+function dateCmp(a, b) {
+  // a > b → 1, a === b → 0, a < b → -1
+  if (a.y !== b.y) return a.y > b.y ? 1 : -1;
+  if (a.m !== b.m) return a.m > b.m ? 1 : -1;
+  if (a.d !== b.d) return a.d > b.d ? 1 : -1;
+  return 0;
+}
 function isEnded() {
-  const e = new Date(CAMPAIGN_END); e.setHours(23, 59, 59); return new Date() > e;
+  return dateCmp(kstToday(), CAMPAIGN_END) > 0;   // 오늘 > 종료일
+}
+function isActive() {
+  const today = kstToday();
+  return dateCmp(today, CAMPAIGN_START) >= 0 && dateCmp(today, CAMPAIGN_END) <= 0;
 }
 function showLoading(v) {
   document.getElementById('loading').style.display = v ? 'flex' : 'none';
