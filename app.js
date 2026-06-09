@@ -117,8 +117,7 @@ function renderHero() {
   document.getElementById('st-top').textContent   = top ? `${top.g}학년\n${top.c}반` : '-';
 
   const pb = document.getElementById('pbadge');
-  else                  { pb.textContent = '예정';  pb.className = 'pbadge ready';  }
-
+  if (pb) { pb.textContent = '진행중'; pb.className = 'pbadge active'; }
 }
 
 // ── 점수판 ──
