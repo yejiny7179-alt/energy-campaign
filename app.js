@@ -18,8 +18,6 @@ const ADMIN_PASSWORD = "admin1234"; // ← 반드시 변경!
 // ────────────────────
 
 // 캠페인 기간 (KST 기준, 6/18부터 종료 배너)
-const START_Y = 2025, START_M = 6, START_D = 10;
-const END_Y   = 2025, END_M   = 6, END_D   = 17;
 const GRADES  = [1, 2];
 const CLASSES = 11;
 
@@ -47,17 +45,9 @@ function toDateStr() {
   const t = kstToday();
   return `${t.y}-${String(t.m).padStart(2,'0')}-${String(t.d).padStart(2,'0')}`;
 }
-function isEnded() {
   const t = kstToday();
-  // 6월 18일(END_D+1) 이후이면 종료
-  if (t.y !== END_Y) return t.y > END_Y;
-  if (t.m !== END_M) return t.m > END_M;
-  return t.d > END_D; // 17일까지는 진행, 18일부터 종료
 }
-function isActive() {
   const t = kstToday();
-  const afterStart = t.y > START_Y || (t.y === START_Y && (t.m > START_M || (t.m === START_M && t.d >= START_D)));
-  return afterStart && !isEnded();
 }
 
 // ── 부팅 ──
@@ -127,12 +117,8 @@ function renderHero() {
   document.getElementById('st-top').textContent   = top ? `${top.g}학년\n${top.c}반` : '-';
 
   const pb = document.getElementById('pbadge');
-  if (isEnded())        { pb.textContent = '종료';  pb.className = 'pbadge ended';  }
-  else if (isActive())  { pb.textContent = '진행중'; pb.className = 'pbadge active'; }
   else                  { pb.textContent = '예정';  pb.className = 'pbadge ready';  }
 
-  document.getElementById('ended-bar').style.display   = isEnded() ? 'flex' : 'none';
-  document.getElementById('upload-card').style.opacity = isEnded() ? '0.55' : '1';
 }
 
 // ── 점수판 ──
@@ -251,7 +237,7 @@ function chkReady() {
   const link  = getLink();
   const isDup = !!(selG && selC && todayMap[`${selG}-${selC}`]);
   document.getElementById('link-preview').style.display = link ? 'flex' : 'none';
-  document.getElementById('sub-btn').disabled = !(selG && selC && link && !isEnded() && !isDup);
+  document.getElementById('sub-btn').disabled = !(selG && selC && link && !isDup);
 }
 
 window.clearLink = () => {
@@ -262,7 +248,6 @@ document.getElementById('media-link').addEventListener('input', chkReady);
 
 // ── 동의 팝업 ──
 window.doSubmit = () => {
-  if (!getLink() || isEnded()) return;
   document.getElementById('chk-consent').checked = false;
   document.getElementById('btn-consent-ok').disabled = true;
   document.getElementById('consent-overlay').style.display = 'flex';
