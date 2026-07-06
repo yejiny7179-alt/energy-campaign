@@ -159,8 +159,22 @@ function renderLB() {
 // ── 실시간 피드 ──
 function startRealtimeFeed() {
   if (unsub) unsub();
-  const q = query(collection(db, "posts"), where("status", "==", "approved"), orderBy("createdAt", "desc"));
-  unsub = onSnapshot(q, async function(snap) {
+  const q = query(collection(db, "posts"), where("status", "==", "approved"));
+  unsub = onSnapshot(q, async function(snapRaw) {
+    // 클라이언트에서 날짜순 정렬
+    const snap = {
+      empty: snapRaw.empty,
+      forEach: function(fn) {
+        const docs = [];
+        snapRaw.forEach(function(d) { docs.push(d); });
+        docs.sort(function(a, b) {
+          const ta = a.data().createdAt && a.data().createdAt.toDate ? a.data().createdAt.toDate().getTime() : 0;
+          const tb = b.data().createdAt && b.data().createdAt.toDate ? b.data().createdAt.toDate().getTime() : 0;
+          return tb - ta;
+        });
+        docs.forEach(fn);
+      }
+    };
     await rebuildScores();
     await checkTodayApproved();
     renderHero();
@@ -345,16 +359,20 @@ async function renderAdm() {
   const el = document.getElementById("adm-content");
   if (admCurTab === "settings") { renderSettings(el); return; }
 
-  const snap = await getDocs(query(
+  const snapAll = await getDocs(query(
     collection(db, "posts"),
-    where("status", "==", admCurTab),
-    orderBy("createdAt", "desc")
+    where("status", "==", admCurTab)
   ));
 
-  if (snap.empty) { el.innerHTML = "<div class=\"empty\">해당 상태의 게시물이 없습니다</div>"; return; }
+  if (snapAll.empty) { el.innerHTML = "<div class=\"empty\">해당 상태의 게시물이 없습니다</div>"; return; }
 
   const items = [];
-  snap.forEach(function(d) { items.push(Object.assign({ id: d.id }, d.data())); });
+  snapAll.forEach(function(d) { items.push(Object.assign({ id: d.id }, d.data())); });
+  items.sort(function(a, b) {
+    const ta = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0;
+    const tb = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0;
+    return tb - ta;
+  });
 
   el.innerHTML = "<div style=\"background:#fff\">" + items.map(function(p) {
     const bc = p.status === "pending" ? "bpend" : p.status === "approved" ? "bok" : "brej";
@@ -428,7 +446,7 @@ window.saveExampleLink = async function() {
 };
 
 window.exportCSV = async function() {
-  const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
+  const snap = await getDocs(collection(db, "posts"));
   const rows = [["학년", "반", "날짜", "상태", "링크", "등록시간"]];
   snap.forEach(function(d) {
     const p  = d.data();
