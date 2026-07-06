@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0A2540">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>⚡ 에너지 절약 캠페인</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,15 +20,14 @@
     <p id="loading-txt">로딩 중...</p>
   </div>
 
-  <!-- ══ 학생: 인증 등록 ══ -->
+  <!-- 학생: 인증 등록 -->
   <div class="page active" id="page-home">
-
     <div class="hero">
-      <div class="hero-sub">⚡ energy saving campaign 2025</div>
+      <div class="hero-sub">ENERGY SAVING CAMPAIGN 2025</div>
       <div class="hero-title">전기 에너지 절약 캠페인</div>
       <div class="hero-period-row">
-        <span class="hero-period-txt">6월 10일 ~ 6월 17일</span>
-        <span class="pbadge" id="pbadge">준비중</span>
+        <span class="hero-period-txt">7월 8일(수) ~ 7월 14일(화)</span>
+        <span class="pbadge active" id="pbadge">진행중</span>
       </div>
       <div class="stat3">
         <div class="sbox"><div class="snum" id="st-total">0</div><div class="slbl">총 인증</div></div>
@@ -36,7 +35,6 @@
         <div class="sbox"><div class="snum" id="st-top" style="font-size:12px;line-height:1.3">-</div><div class="slbl">최다 참여</div></div>
       </div>
     </div>
-
 
     <!-- 참여 조건 -->
     <div class="card">
@@ -47,7 +45,7 @@
           <div class="condition-item"><div class="condition-dot"></div><span>기간 내 <strong>3회 이상 참여</strong>한 학급 — 상품 제공</span></div>
           <div class="condition-item"><div class="condition-dot"></div><span><strong>학년별 참여 횟수 1위</strong> 학급 — 추가 상품 제공</span></div>
         </div>
-        <div class="info-row"><span class="info-key">기간</span><span>2025년 6월 10일(화) ~ 6월 17일(화)</span></div>
+        <div class="info-row"><span class="info-key">기간</span><span>2025년 7월 8일(수) ~ 7월 14일(화)</span></div>
         <div class="info-row"><span class="info-key">대상</span><span>1학년, 2학년</span></div>
         <div class="info-row"><span class="info-key">인정 횟수</span><span>하루 1회만 인정 (같은 날 여러 장 올려도 1회)</span></div>
         <div class="info-row"><span class="info-key">촬영 상황</span><span>이동수업 시 또는 종례 후</span></div>
@@ -97,7 +95,6 @@
     <div class="card" id="upload-card">
       <div class="card-head"><div class="card-title">📤 인증 등록</div></div>
       <div class="card-body">
-
         <div class="sec-lbl">학년 · 반</div>
         <div class="sel-row">
           <select id="sel-g">
@@ -108,29 +105,19 @@
           <select id="sel-c"><option value="">반 선택</option></select>
         </div>
 
-        <!-- 중복 경고 -->
         <div class="dup-warn" id="dup-warn">
           ⚠ 오늘 이미 인증된 학급입니다. 하루 1회만 인정됩니다.
         </div>
 
         <div class="sec-lbl">사진 / 영상 링크 (구글 포토)</div>
         <div class="link-guide">
-          <div class="guide-step">
-            <div class="guide-num">1</div>
-            <div class="guide-txt">스마트폰으로 사진 촬영 후 <strong>구글 포토</strong> 앱 열기</div>
-          </div>
-          <div class="guide-step">
-            <div class="guide-num">2</div>
-            <div class="guide-txt">해당 사진 선택 → 상단 <strong>공유</strong> → <strong>링크 만들기</strong> → 복사</div>
-          </div>
-          <div class="guide-step">
-            <div class="guide-num">3</div>
-            <div class="guide-txt">아래에 붙여넣기 후 등록</div>
-          </div>
+          <div class="guide-step"><div class="guide-num">1</div><div class="guide-txt">스마트폰으로 사진 촬영 후 <strong>구글 포토</strong> 앱 열기</div></div>
+          <div class="guide-step"><div class="guide-num">2</div><div class="guide-txt">해당 사진 선택 → 상단 <strong>공유</strong> → <strong>링크 만들기</strong> → 복사</div></div>
+          <div class="guide-step"><div class="guide-num">3</div><div class="guide-txt">아래에 붙여넣기 후 등록</div></div>
         </div>
 
         <div class="link-input-wrap">
-          <input type="url" id="media-link" placeholder="https://photos.app.goo.gl/..." oninput="chkReady()" autocomplete="off" autocorrect="off" spellcheck="false">
+          <input type="url" id="media-link" placeholder="https://photos.app.goo.gl/..." autocomplete="off" autocorrect="off" spellcheck="false">
           <div class="link-preview" id="link-preview" style="display:none">
             <span class="link-ok">✓ 링크 입력됨</span>
             <button class="link-clear" onclick="clearLink()">✕</button>
@@ -140,26 +127,23 @@
         <button class="big-btn" id="sub-btn" onclick="doSubmit()" disabled>✓ 인증 등록하기</button>
       </div>
     </div>
+  </div>
 
-  </div><!-- /page-home -->
-
-  <!-- ══ 점수판 ══ -->
+  <!-- 점수판 -->
   <div class="page" id="page-board">
     <div class="card" style="margin-top:14px">
       <div class="card-head">
         <div class="card-title">🏆 학급별 참여 현황</div>
         <span class="card-sub">승인 기준 · 실시간</span>
       </div>
-      <!-- 1학년 -->
       <div class="lb-section-title">1학년</div>
       <div id="lb-1"></div>
-      <!-- 2학년 -->
       <div class="lb-section-title">2학년</div>
       <div id="lb-2"></div>
     </div>
   </div>
 
-  <!-- ══ 피드 ══ -->
+  <!-- 피드 -->
   <div class="page" id="page-feed">
     <div class="card" style="margin-top:14px">
       <div class="card-head">
@@ -170,7 +154,7 @@
     </div>
   </div>
 
-  <!-- ══ 관리자 ══ -->
+  <!-- 관리자 -->
   <div class="page" id="page-admin">
     <div id="adm-login">
       <div class="adm-login-wrap">
@@ -193,7 +177,7 @@
     </div>
   </div>
 
-  <!-- ══ 개인정보 동의 팝업 ══ -->
+  <!-- 개인정보 동의 팝업 -->
   <div class="consent-overlay" id="consent-overlay" style="display:none">
     <div class="consent-modal">
       <div class="consent-header">
@@ -221,7 +205,7 @@
     </div>
   </div>
 
-  <!-- ══ 하단 네비게이션 ══ -->
+  <!-- 하단 네비게이션 -->
   <nav class="bottom-nav">
     <button class="bn-btn active" onclick="goPage('home',this)"><span class="bn-icon">🏠</span><span class="bn-lbl">인증 등록</span></button>
     <button class="bn-btn" onclick="goPage('board',this)"><span class="bn-icon">🏆</span><span class="bn-lbl">점수판</span></button>
